@@ -1,0 +1,65 @@
+<script>
+
+// this is the date format required by the api
+function formatDate(d){
+  function pad(n) {
+    return n < 10 ? '0' + n : n;
+  }
+  return d.getUTCFullYear() +   '-' +
+    pad(d.getUTCMonth() + 1) +  '-' +
+    pad(d.getUTCDate()) +       'T' +
+    pad(d.getUTCHours()) +      ':' +
+    pad(d.getUTCMinutes()) +    ':' +
+    pad(d.getUTCSeconds()) +    'Z';
+}
+
+function apiURL(address) {
+  var sensitivity = 200; // meters
+  return [
+    'http://www.spotagent.com/api/proximity', 
+    encodeURIComponent(address), 
+    sensitivity, 
+    encodeURIComponent(formatDate(new Date))
+  ].join('/');
+}
+
+function getThreatLevel(address) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', apiURL(address), false);
+  xhr.setRequestHeader("Accept", "application/json");
+  xhr.send(null);
+  if (xhr.status === 200 || xhr.status === 304) {
+    var response = JSON.parse(xhr.responseText);
+    if (response.summary && response.summary.threat) {
+      return response.summary.threat.level;
+    } else {
+      return 0;
+    }
+  } else {
+    return undefined;
+  }
+}
+
+function evaluateSelection(info, tab) {
+  var selectedText = info.selectionText;
+  // todo scrub text a bit?
+  if (selectedText) {
+    console.log(selectedText);
+    var level = getThreatLevel(selectedText);
+    if (level) {
+      //todo display the threat level
+      console.log(level);
+    } else {
+      console.log('No result.');
+    }
+  }
+}
+
+// set up the menu to be ready to go
+var menuId = chrome.contextMenus.create({
+  "title": "SpotAgent: Threat Level for Selection", 
+  "contexts": ["selection"], 
+  "onclick": evaluateSelection
+});
+
+</script>

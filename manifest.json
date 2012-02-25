@@ -1,0 +1,13 @@
+{
+  "name": "SpotAgent",
+  "version": "1.0",
+  "description": "Displays the SpotAgent Threat Level for addresses found on a web page.",
+  "icons": {
+    "128": "chrome-128.png",
+    "48": "chrome-48.png",
+    "16": "chrome-16.png"
+  },
+  "background_page": "background.html",
+  "permissions": ["contextMenus", "http://www.spotagent.com/api"],
+  "homepage_url": "http://www.spotagent.com/"
+}
