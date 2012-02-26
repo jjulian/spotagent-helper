@@ -8,6 +8,6 @@
     "16": "chrome-16.png"
   },
   "background_page": "background.html",
-  "permissions": ["contextMenus", "http://www.spotagent.com/api"],
+  "permissions": ["tabs", "contextMenus", "http://www.spotagent.com/api", "http://*/*", "https://*/*"],
   "homepage_url": "http://www.spotagent.com/"
 }

@@ -42,13 +42,15 @@ function getThreatLevel(address) {
 
 function evaluateSelection(info, tab) {
   var selectedText = info.selectionText;
-  // todo scrub text a bit?
+  // todo use a regex to ensure that the selection is an address ^\s*\d+\s+\w+
   if (selectedText) {
     console.log(selectedText);
     var level = getThreatLevel(selectedText);
     if (level) {
-      //todo display the threat level
-      console.log(level);
+      console.log('Threat level is ' + level);
+      // Communication: write the selection into the DOM, then the injected file can find it
+      chrome.tabs.executeScript(tab.id, {"code": "var node = document.createElement('div'); node.setAttribute('id','spotagent-address'); node.setAttribute('data-address','" + escape(selectedText) + "'); node.setAttribute('data-level','" + escape(level) + "'); document.getElementsByTagName('body')[0].appendChild(node);"});
+      chrome.tabs.executeScript(tab.id, {"file": "threat_injection.js"});
     } else {
       console.log('No result.');
     }
